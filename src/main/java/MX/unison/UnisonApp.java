@@ -42,12 +42,20 @@ public class UnisonApp extends JFrame {
     private static final Color DORADO_UNISON = Color.decode("#f8bb00");
     private static final Color DORADO_OSCURO_UNISON = Color.decode("#d99e30");
 
+    // Lista de departamentos para el ComboBox
+    private static final String[] DEPARTAMENTOS = {
+            "Electrónica", "Ropa", "Alimentos", "Hogar", "Jardinería",
+            "Oficina", "Salud", "Deportes", "Juguetes", "Automotriz",
+            "Herramientas", "Libros", "Música", "Películas", "Jardín",
+            "Cocina", "Baño", "Dormitorio", "Sala", "Tecnología"
+    };
+
     // Variables para formularios
     private JTextField tfNombreAlmacen;
     private JTextField tfNombreProducto;
     private JTextField tfPrecioProducto;
     private JTextField tfCantidadProducto;
-    private JTextField tfDepartamentoProducto;
+    private JComboBox<String> cbDepartamentoProducto;
     private JComboBox<String> cbAlmacenProducto;
 
     // Variables para filtros de productos
@@ -689,7 +697,7 @@ public class UnisonApp extends JFrame {
                 if (columnIndex == 0) {
                     return Integer.class;
                 }
-                return Object.class;
+                return String.class;
             }
         };
 
@@ -820,12 +828,20 @@ public class UnisonApp extends JFrame {
             btnEliminar.addActionListener(e -> {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
+                    int modelRow = table.convertRowIndexToModel(selectedRow);
                     int confirm = JOptionPane.showConfirmDialog(this,
                             "¿Estás seguro de que quieres eliminar el almacén seleccionado?",
                             "Confirmar Eliminación",
                             JOptionPane.YES_NO_OPTION);
                     if (confirm == JOptionPane.YES_OPTION) {
-                        int id = (int) table.getValueAt(selectedRow, 0);
+                        Object idObj = almacenesTableModel.getValueAt(modelRow, 0);
+                        int id = 0;
+                        if (idObj instanceof Integer) {
+                            id = (Integer) idObj;
+                        } else if (idObj != null) {
+                            id = Integer.parseInt(idObj.toString());
+                        }
+
                         if (DatabaseManager.eliminarAlmacen(id)) {
                             JOptionPane.showMessageDialog(this, "Almacén eliminado correctamente");
                             recargarPanelAlmacenes();
@@ -853,7 +869,8 @@ public class UnisonApp extends JFrame {
             btnModificar.addActionListener(e -> {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    String nombreActual = (String) table.getValueAt(selectedRow, 1);
+                    int modelRow = table.convertRowIndexToModel(selectedRow);
+                    String nombreActual = (String) almacenesTableModel.getValueAt(modelRow, 1);
                     RoundedTextField nombreField = new RoundedTextField();
                     nombreField.setText(nombreActual);
                     nombreField.setPreferredSize(new Dimension(200, 40));
@@ -867,7 +884,14 @@ public class UnisonApp extends JFrame {
                     if (result == JOptionPane.OK_OPTION) {
                         String nuevoNombre = nombreField.getText().trim();
                         if (!nuevoNombre.isEmpty()) {
-                            int id = (int) table.getValueAt(selectedRow, 0);
+                            Object idObj = almacenesTableModel.getValueAt(modelRow, 0);
+                            int id = 0;
+                            if (idObj instanceof Integer) {
+                                id = (Integer) idObj;
+                            } else if (idObj != null) {
+                                id = Integer.parseInt(idObj.toString());
+                            }
+
                             if (DatabaseManager.actualizarAlmacen(id, nuevoNombre, usuarioActual)) {
                                 JOptionPane.showMessageDialog(this, "Almacén modificado correctamente");
                                 recargarPanelAlmacenes();
@@ -1074,10 +1098,16 @@ public class UnisonApp extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 2 || columnIndex == 3) {
+                if (columnIndex == 2) {  // Precio
                     return Double.class;
                 }
-                return Object.class;
+                if (columnIndex == 3) {  // Cantidad
+                    return Integer.class;
+                }
+                if (columnIndex == 0) {  // ID
+                    return Integer.class;
+                }
+                return String.class;
             }
         };
 
@@ -1141,7 +1171,17 @@ public class UnisonApp extends JFrame {
                 @Override
                 public boolean include(Entry<? extends Object, ? extends Object> entry) {
                     try {
-                        Double precio = (Double) entry.getValue(2);
+                        Object precioObj = entry.getValue(2);
+                        Double precio = 0.0;
+
+                        if (precioObj instanceof Double) {
+                            precio = (Double) precioObj;
+                        } else if (precioObj instanceof Integer) {
+                            precio = ((Integer) precioObj).doubleValue();
+                        } else if (precioObj != null) {
+                            precio = Double.parseDouble(precioObj.toString());
+                        }
+
                         Double min = null, max = null;
 
                         if (!tfFiltroPrecioMin.getText().trim().isEmpty()) {
@@ -1167,7 +1207,17 @@ public class UnisonApp extends JFrame {
                 @Override
                 public boolean include(Entry<? extends Object, ? extends Object> entry) {
                     try {
-                        Double cantidad = (Double) entry.getValue(3);
+                        Object cantidadObj = entry.getValue(3);
+                        Integer cantidad = 0;
+
+                        if (cantidadObj instanceof Integer) {
+                            cantidad = (Integer) cantidadObj;
+                        } else if (cantidadObj instanceof Double) {
+                            cantidad = ((Double) cantidadObj).intValue();
+                        } else if (cantidadObj != null) {
+                            cantidad = Integer.parseInt(cantidadObj.toString());
+                        }
+
                         Integer min = null, max = null;
 
                         if (!tfFiltroCantidadMin.getText().trim().isEmpty()) {
@@ -1255,12 +1305,20 @@ public class UnisonApp extends JFrame {
         btnEliminar.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) {
+                int modelRow = table.convertRowIndexToModel(selectedRow);
                 int confirm = JOptionPane.showConfirmDialog(this,
                         "¿Estás seguro de que quieres eliminar el producto seleccionado?",
                         "Confirmar Eliminación",
                         JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    int id = (int) table.getValueAt(selectedRow, 0);
+                    Object idObj = productosTableModel.getValueAt(modelRow, 0);
+                    int id = 0;
+                    if (idObj instanceof Integer) {
+                        id = (Integer) idObj;
+                    } else if (idObj != null) {
+                        id = Integer.parseInt(idObj.toString());
+                    }
+
                     if (DatabaseManager.eliminarProducto(id)) {
                         JOptionPane.showMessageDialog(this, "Producto eliminado correctamente");
                         recargarPanelProductos();
@@ -1277,7 +1335,7 @@ public class UnisonApp extends JFrame {
         });
         botonesPanel.add(btnEliminar);
 
-        // Botón Modificar
+        // Botón Modificar - CORREGIDO para manejar tipos de datos correctamente
         RoundedButton btnModificar = new RoundedButton("✏️ Modificar");
         btnModificar.setBackgroundColor(new Color(23, 162, 184));
         btnModificar.setForeground(Color.WHITE);
@@ -1286,16 +1344,60 @@ public class UnisonApp extends JFrame {
         btnModificar.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) {
-                int id = (int) table.getValueAt(selectedRow, 0);
-                String nombreActual = (String) table.getValueAt(selectedRow, 1);
-                double precioActual = (double) table.getValueAt(selectedRow, 2);
-                int cantidadActual = ((Double) table.getValueAt(selectedRow, 3)).intValue();
-                String departamentoActual = (String) table.getValueAt(selectedRow, 4);
-                String almacenNombreActual = (String) table.getValueAt(selectedRow, 5);
+                int modelRow = table.convertRowIndexToModel(selectedRow);
+
+                // Obtener ID
+                Object idObj = productosTableModel.getValueAt(modelRow, 0);
+                int id = 0;
+                if (idObj instanceof Integer) {
+                    id = (Integer) idObj;
+                } else if (idObj != null) {
+                    id = Integer.parseInt(idObj.toString());
+                }
+
+                // Obtener nombre
+                String nombreActual = (String) productosTableModel.getValueAt(modelRow, 1);
+
+                // Obtener precio (manejar Integer o Double)
+                Object precioObj = productosTableModel.getValueAt(modelRow, 2);
+                double precioActual = 0.0;
+                if (precioObj instanceof Double) {
+                    precioActual = (Double) precioObj;
+                } else if (precioObj instanceof Integer) {
+                    precioActual = ((Integer) precioObj).doubleValue();
+                } else if (precioObj != null) {
+                    try {
+                        precioActual = Double.parseDouble(precioObj.toString());
+                    } catch (NumberFormatException ex) {
+                        precioActual = 0.0;
+                    }
+                }
+
+                // Obtener cantidad (manejar Integer o Double)
+                Object cantidadObj = productosTableModel.getValueAt(modelRow, 3);
+                int cantidadActual = 0;
+                if (cantidadObj instanceof Integer) {
+                    cantidadActual = (Integer) cantidadObj;
+                } else if (cantidadObj instanceof Double) {
+                    cantidadActual = ((Double) cantidadObj).intValue();
+                } else if (cantidadObj != null) {
+                    try {
+                        cantidadActual = Integer.parseInt(cantidadObj.toString());
+                    } catch (NumberFormatException ex) {
+                        cantidadActual = 0;
+                    }
+                }
+
+                // Obtener departamento
+                String departamentoActual = (String) productosTableModel.getValueAt(modelRow, 4);
+
+                // Obtener almacén
+                String almacenNombreActual = (String) productosTableModel.getValueAt(modelRow, 5);
 
                 // Obtener ID del almacén por su nombre
                 int almacenIdActual = DatabaseManager.obtenerIdAlmacenPorNombre(almacenNombreActual);
 
+                // Crear campos del formulario
                 RoundedTextField nombreField = new RoundedTextField();
                 nombreField.setText(nombreActual);
                 nombreField.setPreferredSize(new Dimension(250, 35));
@@ -1308,9 +1410,11 @@ public class UnisonApp extends JFrame {
                 cantidadField.setText(String.valueOf(cantidadActual));
                 cantidadField.setPreferredSize(new Dimension(250, 35));
 
-                RoundedTextField departamentoField = new RoundedTextField();
-                departamentoField.setText(departamentoActual);
-                departamentoField.setPreferredSize(new Dimension(250, 35));
+                // ComboBox para departamento
+                JComboBox<String> departamentoCombo = new JComboBox<>(DEPARTAMENTOS);
+                departamentoCombo.setSelectedItem(departamentoActual);
+                departamentoCombo.setEditable(true);
+                departamentoCombo.setPreferredSize(new Dimension(250, 35));
 
                 // ComboBox para almacén
                 List<Object[]> almacenes = DatabaseManager.obtenerAlmacenes();
@@ -1326,7 +1430,7 @@ public class UnisonApp extends JFrame {
                         "Nombre:", nombreField,
                         "Precio:", precioField,
                         "Cantidad:", cantidadField,
-                        "Departamento:", departamentoField,
+                        "Departamento:", departamentoCombo,
                         "Almacén:", almacenCombo
                 };
 
@@ -1338,7 +1442,10 @@ public class UnisonApp extends JFrame {
                         String nombre = nombreField.getText();
                         double precio = Double.parseDouble(precioField.getText());
                         int cantidad = Integer.parseInt(cantidadField.getText());
-                        String departamento = departamentoField.getText();
+                        String departamento = (String) departamentoCombo.getSelectedItem();
+                        if (departamento == null || departamento.trim().isEmpty()) {
+                            departamento = departamentoCombo.getEditor().getItem().toString().trim();
+                        }
                         String almacenNombre = (String) almacenCombo.getSelectedItem();
                         int almacenId = DatabaseManager.obtenerIdAlmacenPorNombre(almacenNombre);
 
@@ -1507,16 +1614,17 @@ public class UnisonApp extends JFrame {
         tfCantidadProducto.setBackground(Color.WHITE);
         tfCantidadProducto.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        // Campo Departamento
+        // Campo Departamento (ComboBox)
         JLabel lblDepartamento = new JLabel("Departamento:");
         lblDepartamento.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblDepartamento.setForeground(AZUL_UNISON);
         lblDepartamento.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        tfDepartamentoProducto = new RoundedTextField();
-        tfDepartamentoProducto.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        tfDepartamentoProducto.setBackground(Color.WHITE);
-        tfDepartamentoProducto.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        cbDepartamentoProducto = new JComboBox<>(DEPARTAMENTOS);
+        cbDepartamentoProducto.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        cbDepartamentoProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        cbDepartamentoProducto.setBackground(Color.WHITE);
+        cbDepartamentoProducto.setEditable(true);
 
         // Campo Almacén (ComboBox con nombres)
         JLabel lblAlmacen = new JLabel("Almacén:");
@@ -1572,7 +1680,7 @@ public class UnisonApp extends JFrame {
         formContent.add(Box.createRigidArea(new Dimension(0, 15)));
         formContent.add(lblDepartamento);
         formContent.add(Box.createRigidArea(new Dimension(0, 10)));
-        formContent.add(tfDepartamentoProducto);
+        formContent.add(cbDepartamentoProducto);
         formContent.add(Box.createRigidArea(new Dimension(0, 15)));
         formContent.add(lblAlmacen);
         formContent.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -1608,7 +1716,12 @@ public class UnisonApp extends JFrame {
             String nombre = tfNombreProducto.getText().trim();
             double precio = Double.parseDouble(tfPrecioProducto.getText());
             int cantidad = Integer.parseInt(tfCantidadProducto.getText());
-            String departamento = tfDepartamentoProducto.getText().trim();
+            String departamento = (String) cbDepartamentoProducto.getSelectedItem();
+
+            if (departamento == null || departamento.trim().isEmpty()) {
+                departamento = cbDepartamentoProducto.getEditor().getItem().toString().trim();
+            }
+
             String almacenNombre = (String) cbAlmacenProducto.getSelectedItem();
 
             // Obtener ID del almacén por su nombre
@@ -1636,7 +1749,7 @@ public class UnisonApp extends JFrame {
         tfNombreProducto.setText("");
         tfPrecioProducto.setText("");
         tfCantidadProducto.setText("");
-        tfDepartamentoProducto.setText("");
+        cbDepartamentoProducto.setSelectedIndex(0);
         if (cbAlmacenProducto.getItemCount() > 0) {
             cbAlmacenProducto.setSelectedIndex(0);
         }

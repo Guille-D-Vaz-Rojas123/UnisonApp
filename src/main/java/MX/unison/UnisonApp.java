@@ -103,7 +103,7 @@ public class UnisonApp extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(color);
             g2.setStroke(new BasicStroke(thickness));
-            g2.drawRoundRect(x + thickness/2, y + thickness/2,
+            g2.drawRoundRect(x + thickness / 2, y + thickness / 2,
                     width - thickness, height - thickness, radius, radius);
             g2.dispose();
         }
@@ -380,7 +380,7 @@ public class UnisonApp extends JFrame {
         // Botón de login
         btnLogin = new RoundedButton("INICIAR SESIÓN");
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        ((RoundedButton)btnLogin).setBackgroundColor(colorPrimario);
+        ((RoundedButton) btnLogin).setBackgroundColor(colorPrimario);
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -1913,3 +1913,4 @@ public class UnisonApp extends JFrame {
             DatabaseManager.closeConnection();
         }));
     }
+}

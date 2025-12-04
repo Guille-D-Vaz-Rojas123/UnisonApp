@@ -294,6 +294,33 @@ public class UnisonApp extends JFrame {
         }
     }
 
+    // NUEVO MÉTODO: Actualizar ComboBox de almacenes
+    private void actualizarComboAlmacenes() {
+        if (cbAlmacenProducto != null) {
+            // Obtener la lista actualizada de almacenes desde la base de datos
+            List<Object[]> almacenes = DatabaseManager.obtenerAlmacenes();
+
+            // Guardar el elemento seleccionado actualmente
+            String seleccionActual = (String) cbAlmacenProducto.getSelectedItem();
+
+            // Crear un nuevo modelo para el ComboBox
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+            // Agregar cada almacén al modelo
+            for (Object[] almacen : almacenes) {
+                model.addElement((String) almacen[1]); // El nombre está en la posición 1
+            }
+
+            // Establecer el nuevo modelo en el ComboBox
+            cbAlmacenProducto.setModel(model);
+
+            // Restaurar la selección anterior si todavía existe
+            if (seleccionActual != null) {
+                cbAlmacenProducto.setSelectedItem(seleccionActual);
+            }
+        }
+    }
+
     private JPanel crearLoginPanel() {
         Color colorPrimario = new Color(0, 51, 102);
         Color colorSecundario = new Color(0, 102, 204);
@@ -1416,7 +1443,7 @@ public class UnisonApp extends JFrame {
                 departamentoCombo.setEditable(true);
                 departamentoCombo.setPreferredSize(new Dimension(250, 35));
 
-                // ComboBox para almacén
+                // ComboBox para almacén - ACTUALIZADO para usar almacenes actuales
                 List<Object[]> almacenes = DatabaseManager.obtenerAlmacenes();
                 String[] nombresAlmacenes = new String[almacenes.size()];
                 for (int i = 0; i < almacenes.size(); i++) {
@@ -1626,21 +1653,19 @@ public class UnisonApp extends JFrame {
         cbDepartamentoProducto.setBackground(Color.WHITE);
         cbDepartamentoProducto.setEditable(true);
 
-        // Campo Almacén (ComboBox con nombres)
+        // Campo Almacén (ComboBox con nombres) - MODIFICADO para actualización dinámica
         JLabel lblAlmacen = new JLabel("Almacén:");
         lblAlmacen.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblAlmacen.setForeground(AZUL_UNISON);
         lblAlmacen.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Cargar almacenes para el ComboBox
-        List<Object[]> almacenes = DatabaseManager.obtenerAlmacenes();
-        String[] nombresAlmacenes = new String[almacenes.size()];
-        for (int i = 0; i < almacenes.size(); i++) {
-            nombresAlmacenes[i] = (String) almacenes.get(i)[1];
-        }
-        cbAlmacenProducto = new JComboBox<>(nombresAlmacenes);
+        // Crear el ComboBox vacío inicialmente
+        cbAlmacenProducto = new JComboBox<>();
         cbAlmacenProducto.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         cbAlmacenProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        // Cargar los almacenes inicialmente
+        actualizarComboAlmacenes();
 
         // Panel de botones
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
@@ -1704,6 +1729,10 @@ public class UnisonApp extends JFrame {
         if (DatabaseManager.agregarAlmacen(nombre, usuarioActual)) {
             JOptionPane.showMessageDialog(this, "Almacén guardado correctamente");
             tfNombreAlmacen.setText("");
+
+            // ¡IMPORTANTE! Actualizar el ComboBox de almacenes después de agregar uno nuevo
+            actualizarComboAlmacenes();
+
             cardLayout.show(mainPanel, PANEL_ALMACENES);
             recargarPanelAlmacenes();
         } else {
@@ -1771,6 +1800,10 @@ public class UnisonApp extends JFrame {
     public void mostrarFormProducto() {
         if ("admin".equals(rolActual) || "productos".equals(rolActual)) {
             limpiarFormularioProducto();
+
+            // ¡IMPORTANTE! Actualizar el ComboBox de almacenes cada vez que se muestra el formulario
+            actualizarComboAlmacenes();
+
             cardLayout.show(mainPanel, PANEL_FORM_PRODUCTO);
         } else {
             JOptionPane.showMessageDialog(this,
@@ -1780,16 +1813,24 @@ public class UnisonApp extends JFrame {
         }
     }
 
-    // Métodos para recargar paneles
+    // Métodos para recargar paneles - MODIFICADOS para actualizar ComboBox
     private void recargarPanelAlmacenes() {
         mainPanel.remove(2);
         mainPanel.add(crearAlmacenesPanel(), PANEL_ALMACENES, 2);
+
+        // Actualizar el ComboBox de almacenes después de recargar
+        actualizarComboAlmacenes();
+
         cardLayout.show(mainPanel, PANEL_ALMACENES);
     }
 
     private void recargarPanelProductos() {
         mainPanel.remove(3);
         mainPanel.add(crearProductosPanel(), PANEL_PRODUCTOS, 3);
+
+        // Actualizar el ComboBox de almacenes después de recargar
+        actualizarComboAlmacenes();
+
         cardLayout.show(mainPanel, PANEL_PRODUCTOS);
     }
 
@@ -1872,4 +1913,3 @@ public class UnisonApp extends JFrame {
             DatabaseManager.closeConnection();
         }));
     }
-}

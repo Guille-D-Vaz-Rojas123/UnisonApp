@@ -11,8 +11,11 @@ Productos te permitira poder modificar solamente la tabla productos y solamente 
 Almacen te permitira poder modificar solamente la tabla almacen y solamente ver los productos como expectador
 
 usuarios/contraseñas
+
 productos/productos19
+
 almacen/almacen11
+
 admin/admin23
 
 VISTA LOGIN
@@ -23,7 +26,7 @@ metistes te permitiran acceder a los diferentes beneficios de cada rol
 
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/707af5d52ffcbb0ab98dbeaf04fda609ca67106c/VISTA%20LOGIN.jpeg)
 
-VISTA LOGIN
+VISTA INICIO
 -
 
 En esta ventana se vera una interfaz donde se encuentra el logo de la unison, el nombre del proyecto y el nombre del autor, m

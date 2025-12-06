@@ -15,18 +15,49 @@ public class DatabaseManager {
         try {
             connection = DriverManager.getConnection(DB_URL);
 
-            // Forzar la recreación de tablas eliminándolas primero
-            dropTables();
-
+            // SOLO CREAR TABLAS SI NO EXISTEN - NO BORRAR DATOS EXISTENTES
             createTables();
-            insertInitialData();
 
-            // Verificar y corregir secuencias después de la inicialización
+            // Verificar si hay datos iniciales, si no, insertarlos
+            if (isDatabaseEmpty()) {
+                System.out.println("Base de datos vacía. Insertando datos iniciales...");
+                insertInitialData();
+            } else {
+                System.out.println("Base de datos ya contiene datos. No se insertan datos iniciales.");
+            }
+
+            // Verificar y corregir secuencias
             verificarYCorregirSecuencias();
 
         } catch (SQLException e) {
             System.err.println("Error inicializando la base de datos: " + e.getMessage());
         }
+    }
+
+    // Método para verificar si la base de datos está vacía
+    private static boolean isDatabaseEmpty() {
+        String[] tablas = {"usuarios", "almacenes", "productos"};
+
+        for (String tabla : tablas) {
+            try {
+                String sql = "SELECT COUNT(*) as count FROM " + tabla;
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+
+                if (rs.next() && rs.getInt("count") > 0) {
+                    rs.close();
+                    stmt.close();
+                    return false; // La tabla tiene datos
+                }
+
+                rs.close();
+                stmt.close();
+            } catch (SQLException e) {
+                System.out.println("Tabla " + tabla + " no tiene datos o no existe aún");
+            }
+        }
+
+        return true; // Todas las tablas están vacías
     }
 
     // Método para verificar y corregir secuencias
@@ -91,18 +122,6 @@ public class DatabaseManager {
         System.out.println("=== FIN VERIFICACIÓN ===\n");
     }
 
-    // Método para eliminar tablas existentes
-    private static void dropTables() {
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute("DROP TABLE IF EXISTS productos");
-            stmt.execute("DROP TABLE IF EXISTS almacenes");
-            stmt.execute("DROP TABLE IF EXISTS usuarios");
-            System.out.println("Tablas existentes eliminadas para recreación");
-        } catch (SQLException e) {
-            System.err.println("Error eliminando tablas: " + e.getMessage());
-        }
-    }
-
     private static void createTables() {
         String createUsuariosTable = """
             CREATE TABLE IF NOT EXISTS usuarios (
@@ -141,7 +160,7 @@ public class DatabaseManager {
             stmt.execute(createUsuariosTable);
             stmt.execute(createAlmacenesTable);
             stmt.execute(createProductosTable);
-            System.out.println("Tablas creadas exitosamente");
+            System.out.println("Tablas verificadas/creadas exitosamente");
         } catch (SQLException e) {
             System.err.println("Error creando tablas: " + e.getMessage());
         }
@@ -163,12 +182,12 @@ public class DatabaseManager {
             pstmt.setString(2, UnisonApp.hashPassword("almacen11"));
             pstmt.setString(3, UnisonApp.hashPassword("productos19"));
             pstmt.executeUpdate();
-            System.out.println("Usuarios insertados exitosamente");
+            System.out.println("Usuarios iniciales insertados exitosamente");
         } catch (SQLException e) {
-            System.err.println("Error insertando usuarios: " + e.getMessage());
+            System.err.println("Error insertando usuarios iniciales: " + e.getMessage());
         }
 
-        // Insertar almacenes
+        // Insertar almacenes iniciales
         String[] nombresAlmacenes = {"Hermosillo", "Caborca", "Guaymas", "Sonoyta", "Nogales"};
         String insertAlmacen = "INSERT INTO almacenes (nombre, fecha_hora_creacion, fecha_hora_ultima_modificacion, ultimo_usuario_en_modificar) VALUES (?, ?, ?, ?)";
 
@@ -181,10 +200,9 @@ public class DatabaseManager {
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
-            System.out.println("Almacenes insertados exitosamente");
+            System.out.println("Almacenes iniciales insertados exitosamente");
         } catch (SQLException e) {
-            System.err.println("Error insertando almacenes: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error insertando almacenes iniciales: " + e.getMessage());
         }
 
         // Insertar productos del CSV - TODOS en almacenes 1-5
@@ -269,10 +287,9 @@ public class DatabaseManager {
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
-            System.out.println("Productos del CSV insertados exitosamente - Total: " + productosCSV.length);
+            System.out.println("Productos iniciales insertados exitosamente - Total: " + productosCSV.length);
         } catch (SQLException e) {
-            System.err.println("Error insertando productos del CSV: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error insertando productos iniciales: " + e.getMessage());
         }
     }
 
@@ -381,7 +398,6 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             System.err.println("Error obteniendo productos con nombres de almacén: " + e.getMessage());
-            e.printStackTrace();
         }
         return productos;
     }
@@ -399,7 +415,6 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             System.err.println("Error obteniendo ID de almacén por nombre: " + e.getMessage());
-            e.printStackTrace();
         }
         return -1; // Retorna -1 si no se encuentra
     }
@@ -508,6 +523,7 @@ public class DatabaseManager {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
+                System.out.println("Conexión a la base de datos cerrada.");
             }
         } catch (SQLException e) {
             System.err.println("Error cerrando conexión: " + e.getMessage());

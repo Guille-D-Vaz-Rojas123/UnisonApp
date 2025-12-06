@@ -251,7 +251,7 @@ public class UnisonApp extends JFrame {
     public UnisonApp() {
         super("Inicio de sesión - UNISON");
 
-        // INICIALIZAR BASE DE DATOS
+        // INICIALIZAR BASE DE DATOS (sin borrar datos existentes)
         DatabaseManager.initializeDatabase();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1906,7 +1906,17 @@ public class UnisonApp extends JFrame {
         }
 
         SwingUtilities.invokeLater(() -> {
-            new UnisonApp().setVisible(true);
+            UnisonApp app = new UnisonApp();
+            app.setVisible(true);
+
+            // Manejar cierre de ventana correctamente
+            app.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    DatabaseManager.closeConnection();
+                    System.exit(0);
+                }
+            });
         });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

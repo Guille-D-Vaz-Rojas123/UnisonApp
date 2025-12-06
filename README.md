@@ -31,9 +31,20 @@ as 2 botones que te mandaran a cada uno, esto independientemente del rol en el q
 
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/d31b080d9e631ad53c4a53c500015acdb8f2d6de/VISTA%20INICIO.jpeg)
 
+
 VISTA ALMACENES
+-
 
 Esta es la interfaz de los almacenes, contiene los filtros de búsqueda, que preguntan por ID, Nombre, fechas, y el ultimo usuario que modifico, teniendo 3 botones de añadir, eliminar y modificar en la parte baja, con un botón en la parte superior izquierda que te devuelve al menú principal y en la parte superior derecha te dira el rol en el que estas
+
+ ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/e7cd5c2800f1160b67aba45e72aed71104b33262/VISTA%20ALMACENES.jpeg)
+
+
+VISTA PRODUCTOS
+-
+En esta interfaz se muestran bastantes mas encabezados por que hay mas parámetros y filtros con los productos que hay, habiendo en los filtros el nombre, el precio min-max, cantidad de artículos que hay de ese productos tambien en min-max, el almacen y departamento donde se encuentren, etc.
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/e7cd5c2800f1160b67aba45e72aed71104b33262/VISTA%20PRODUCTOS.jpeg)
 
 
 

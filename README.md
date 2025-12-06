@@ -47,6 +47,7 @@ En esta interfaz se muestran bastantes mas encabezados por que hay mas parámetr
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/e7cd5c2800f1160b67aba45e72aed71104b33262/VISTA%20PRODUCTOS.jpeg)
 
 FUNCION DE LOS BOTONES
+-
 
 BOTON AÑADIR ALMACEN
 
@@ -55,6 +56,26 @@ BOTON AÑADIR ALMACEN
 BOTON MODIFICAR ALMACEN
 
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/5da5fa3c03f49ae6507fd28b21df60f49df17b67/MODIFICAR%20ALMACEN.jpeg)
+
+BOTON ELIMINAR ALMACEN
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/26d424114cce4b198755f038e01117e7e1de2ce3/ELIMINAR%20ALMACEN.jpeg)
+
+
+BOTON AÑADIR PRODUCTO
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/5a6f3bf632c4c1bf596db57815e316b4c055afdb/BOTON%20DE%20A%C3%91ADIR%20PRODUCTO.jpeg)
+
+BOTON ELIMINAR PRODUCTO
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/67cef7ee2e5c13f0aa45cc80906fb0f7bf6d4918/ELIMINAR%20PRODUCTO.jpeg)
+
+BOTON MODIFICAR PRODUCTO
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/e22076787b45e1c5b7bbb6d9bf91e3f2d6165a49/MODIFICAR%20PRODUCTO.jpeg)
+
+
+
 
 
 

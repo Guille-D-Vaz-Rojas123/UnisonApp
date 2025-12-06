@@ -17,4 +17,6 @@ admin/admin23
 
 Esta tiene una interfaz de LOGIN donde se te pedira meter tu usuario y contraseña, dependiendo de cual de las 3 anteriores mencionados 
 metistes te permitiran acceder a los diferentes beneficios de cada rol
+
+
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/707af5d52ffcbb0ab98dbeaf04fda609ca67106c/VISTA%20LOGIN.jpeg)

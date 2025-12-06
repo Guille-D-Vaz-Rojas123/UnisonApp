@@ -20,3 +20,11 @@ metistes te permitiran acceder a los diferentes beneficios de cada rol
 
 
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/707af5d52ffcbb0ab98dbeaf04fda609ca67106c/VISTA%20LOGIN.jpeg)
+
+
+En esta ventana se vera una interfaz donde se encuentra el logo de la unison, el nombre del proyecto y el nombre del autor, m
+as 2 botones que te mandaran a cada uno, esto independientemente del rol en el que te encuentres
+
+
+![image alt]( Aquí escriben el permalink de la imagen )
+

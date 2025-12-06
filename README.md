@@ -26,5 +26,5 @@ En esta ventana se vera una interfaz donde se encuentra el logo de la unison, el
 as 2 botones que te mandaran a cada uno, esto independientemente del rol en el que te encuentres
 
 
-![image alt]( Aquí escriben el permalink de la imagen )
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/d31b080d9e631ad53c4a53c500015acdb8f2d6de/VISTA%20INICIO.jpeg) 
 

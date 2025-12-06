@@ -46,5 +46,18 @@ En esta interfaz se muestran bastantes mas encabezados por que hay mas parámetr
 
 ![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/e7cd5c2800f1160b67aba45e72aed71104b33262/VISTA%20PRODUCTOS.jpeg)
 
+FUNCION DE LOS BOTONES
+
+BOTON AÑADIR ALMACEN
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/5da5fa3c03f49ae6507fd28b21df60f49df17b67/VISTA%20A%C3%91ADIR%20ALMACEN.jpeg)
+
+BOTON MODIFICAR ALMACEN
+
+![image alt](https://github.com/Guille-D-Vaz-Rojas123/UnisonApp/blob/5da5fa3c03f49ae6507fd28b21df60f49df17b67/MODIFICAR%20ALMACEN.jpeg)
+
+
+
+
 
 
